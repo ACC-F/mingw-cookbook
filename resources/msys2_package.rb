@@ -49,8 +49,8 @@ action_class do
   def msys2_init
     cache_dir = ::File.join(root, '.cache')
     f_cache_dir = win_friendly_path(cache_dir)
-    base_url = 'http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210105.tar.xz'
-    base_checksum = '982e54de087d53adfc6a8caf7614d4a7add36dd02dcb0b7838060dd893e9f596'
+    base_url = 'http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-2021.tar.xz'
+    base_checksum = '3f2ceb097a081789d9d497e0d3df8d99c16a1591b9984b0469440cd5bfa65092'
 
     unless ::File.exist?(::File.join(root, 'msys2.exe'))
       seven_zip_archive "cache msys2 base to #{f_cache_dir}" do
@@ -115,7 +115,7 @@ action_class do
 
       #msys2_exec('remove catgets and libcatgets', 'pacman -R catgets libcatgets --noconfirm')
       msys2_exec('upgrade msys2 database and core packages', 'pacman -Syu --noconfirm')
-      msys2_exec('upgrade core pacakges, second pass', 'pacman -Su --noconfirm')
+      msys2_exec('upgrade core pacakges, second pass', 'pacman -Syuu --noconfirm')
     end
   end
 
