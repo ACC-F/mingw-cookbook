@@ -49,7 +49,7 @@ action_class do
   def msys2_init
     cache_dir = ::File.join(root, '.cache')
     f_cache_dir = win_friendly_path(cache_dir)
-    base_url = 'http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-2021.tar.xz'
+    base_url = 'http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210228.tar.xz'
     base_checksum = '3f2ceb097a081789d9d497e0d3df8d99c16a1591b9984b0469440cd5bfa65092'
 
     unless ::File.exist?(::File.join(root, 'msys2.exe'))
