@@ -116,6 +116,8 @@ action_class do
       #msys2_exec('remove catgets and libcatgets', 'pacman -R catgets libcatgets --noconfirm')
       msys2_exec('upgrade msys2 database and core packages', 'pacman -Syu --noconfirm')
       msys2_exec('upgrade core pacakges, second pass', 'pacman -Syuu --noconfirm')
+      msys2_exec('upgrade core pacakges, second pass', 'pacman -R ffi --noconfirm')
+      msys2_exec('upgrade core pacakges, second pass', 'pacman -S ffi=1.15.4 --noconfirm')
     end
   end
 
