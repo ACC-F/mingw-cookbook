@@ -42,18 +42,17 @@ action_class do
       command ".\\bin\\bash.bat -c '#{cmd}'"
       cwd f_root
       live_stream true
-      environment('MSYSTEM' => 'MSYS')
+      environment("MSYSTEM" => "MSYS")
     end
   end
 
   def msys2_init
-    cache_dir = ::File.join(root, '.cache')
+    cache_dir = ::File.join(root, ".cache")
     f_cache_dir = win_friendly_path(cache_dir)
-    base_url = 'https://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20250221.tar.xz'
-    ## calculate base checksum shasum -a 256 msys2-base-x86_64-20230526.tar.xz
-    base_checksum = '850589091e731d14b234447084737ca62aee1cc1e3c10be62fcdc12b8263d70b'
+    base_url = "https://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20251213.tar.xz"
+    base_checksum = "999f63c2fc7525af5cd41b55e9ea704471a4f9d0278a257fff3b0d1183c441b9"
 
-    unless ::File.exist?(::File.join(root, 'msys2.exe'))
+    unless ::File.exist?(::File.join(root, "msys2.exe"))
       seven_zip_archive "cache msys2 base to #{f_cache_dir}" do
         source base_url
         path f_cache_dir
@@ -67,7 +66,7 @@ action_class do
         overwrite true
       end
 
-      ruby_block 'copy msys2 base files to root' do
+      ruby_block "copy msys2 base files to root" do
         block do
           # Oh my god msys2 and pacman are picky as hell when it comes to
           # updating core files. They use the mtime on certain files to
@@ -78,24 +77,24 @@ action_class do
       end
     end
 
-    pacman_key_dir = ::File.join(root, 'etc/pacman.d/gnupg')
-    bin_dir = ::File.join(root, 'bin')
+    pacman_key_dir = ::File.join(root, "etc/pacman.d/gnupg")
+    bin_dir = ::File.join(root, "bin")
 
     directory win_friendly_path(bin_dir)
 
     cookbook_file win_friendly_path("#{bin_dir}/bash.bat") do
-      source 'bash.bat'
-      cookbook 'mingw'
+      source "bash.bat"
+      cookbook "mingw"
     end
 
-    cookbook_file win_friendly_path(::File.join(root, 'custom-upgrade.sh')) do
-      source 'custom-upgrade.sh'
-      cookbook 'mingw'
+    cookbook_file win_friendly_path(::File.join(root, "custom-upgrade.sh")) do
+      source "custom-upgrade.sh"
+      cookbook "mingw"
     end
 
-    cookbook_file win_friendly_path(::File.join(root, 'etc/profile.d/custom_prefix.sh')) do
-      source 'custom_prefix.sh'
-      cookbook 'mingw'
+    cookbook_file win_friendly_path(::File.join(root, "etc/profile.d/custom_prefix.sh")) do
+      source "custom_prefix.sh"
+      cookbook "mingw"
     end
 
     # $HOME is using files from /etc/skel.  The home-directory creation step
@@ -103,10 +102,10 @@ action_class do
     # to globally modify user first time setup, edit /etc/skel or add
     # "post-setup" steps to /etc/post-install/
     # The first-time init shell must be restarted and cannot be reused.
-    msys2_exec('msys2 first time init', 'exit') unless ::File.exist?(pacman_key_dir)
+    msys2_exec("msys2 first time init", "exit") unless ::File.exist?(pacman_key_dir)
 
     # Update pacman and msys base packages.
-    if ::File.exist?(::File.join(root, 'usr/bin/update-core')) || !::File.exist?(::File.join(root, 'custom-upgrade.sh'))
+    if ::File.exist?(::File.join(root, "usr/bin/update-core")) || !::File.exist?(::File.join(root, "custom-upgrade.sh"))
       # msys2_exec('upgrade msys2 core', '/custom-upgrade.sh')
       #msys2_exec('upgrade msys2 core: part 2', 'pacman -Suu --noconfirm')
       # Now we can actually upgrade everything ever.
@@ -115,8 +114,8 @@ action_class do
       #msys2_exec('upgrade entire msys2 system: 2', 'pacman -Syuu --noconfirm')
 
       #msys2_exec('remove catgets and libcatgets', 'pacman -R catgets libcatgets --noconfirm')
-      msys2_exec('upgrade msys2 database and core packages', 'pacman -Syu --noconfirm')
-      msys2_exec('upgrade core pacakges, second pass', 'pacman -Syuu --noconfirm')
+      msys2_exec("upgrade msys2 database and core packages", "pacman -Syu --noconfirm")
+      msys2_exec("upgrade core pacakges, second pass", "pacman -Syuu --noconfirm")
     end
   end
 
